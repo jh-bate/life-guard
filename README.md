@@ -24,3 +24,35 @@ The tests are run with a mocked version of the user Api that will be spun up
 ```bash
 grunt test
 ```
+
+
+## Usage
+
+Setup
+```
+var envConfig = {
+	serverName : 'the name',
+	serverSceret : 'the secrect',
+	userApiHost : 'http://localhost:1002',
+	...
+};
+
+var hakkenSubscription = require('hakken')().client.make();
+hakkenSubscription.start();
+hostGetter = hakkenSubscription.randomWatch(config.userApiHost);
+hostGetter.start();
+
+
+var userApi = require('life-gaurd')(envConfig, hakkenSubscription);
+```
+
+Usage - add to routes you need to authenticate via Tidepool User Api
+```
+
+//health check
+server.get('/status',groupApi.status);
+
+//user membership
+server.get('/membership/:userid', userApi.checkToken, userApi.getToken, groupApi.memberOf);
+
+```
