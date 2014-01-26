@@ -52,9 +52,10 @@ mockUserApi.post('/serverlogin', function(req, res, next) {
 
 mockUserApi.get('/token/:usertoken', function(req, res, next) {
 
-	var token = req.params.usertoken;
+	//console.log('given token ',req.params.usertoken);
 
-	if(token){
+	if(req.params.usertoken!='bad'){
+		console.log('all good in fake user api');
 		res.send(200,{userid: user.userid});
 		return next();
 	}

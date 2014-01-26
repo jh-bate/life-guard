@@ -33,7 +33,8 @@ describe('User API Helper', function() {
     var mockUserApi,
         usersAPIHelper,
         sessionToken = '99406ced-8052-49c5-97ee-547cc3347da6',
-        mockUserAPIPort = 10004;
+        userToken = '88888ced-8888-88c8-88ee-888cc8888da8',
+        mockUserAPIPort = 10088;
 
     var setupUsersAPIHelper=function(){
 
@@ -56,83 +57,98 @@ describe('User API Helper', function() {
         var userApi = require('../lib/index')(config,fakeHakkenWatcher);
 
         server.get('/getToken',userApi.getToken,function(req,res){
-            //just passing through at this stage
-            res.send(200);    
+
+            //pass through result
+            if(res.headers['x-tidepool-session-token'] == null && req.headers['x-tidepool-session-token'] != null){
+                res.send(200,{askForToken:false});
+            }else{
+                res.send(200,{askForToken:true});   
+            }
+            next();
         });
 
-        server.get('/checkToken/:usertoken',userApi.checkToken,function(req,res){
-            //pass through as test
-            res.send(200,{userid : req.userid});    
+        server.get('/checkToken/:usertoken',userApi.checkToken,function(req,res,next){
+
+            //pass through result
+            if(res.tidepool.userid == null){
+                res.send(res.statusCode);
+            }else{
+                res.send(200,{idGiven:true});  
+            }
+            next();
         });
 
         return server;
 
     };
 
-    before(function(){
+    beforeEach(function(done){
 
         //start mock user api
         mockUserApi = require('./mockUserApi');
         mockUserApi.listen(mockUserAPIPort);
-
         usersAPIHelper = setupUsersAPIHelper();
-    
+        done();
     });
 
-    after(function(){
+    afterEach(function(done){
         mockUserApi.close();
+        done();
     });
 
-    it('valid token', function(done) {
+    it('valid token returns us the user id', function(done) {
 
         supertest(usersAPIHelper)
-        .get('/checkToken/'+sessionToken)
+        .get('/checkToken/'+userToken)
         .set('x-tidepool-session-token', sessionToken)
         .expect(200)
         .end(function(err, res) {
             if (err) return done(err);
-            expect(res.body.userid).to.exist;
+
+            expect(res.body.idGiven).to.be.true;
             done();
         });
         
     });
 
-    it('trying to get a new token when we already have one', function(done) {
+    it('invalid token means 401 and no userid', function(done) {
 
         supertest(usersAPIHelper)
-        .get('/getToken')
-        .set('X-Tidepool-Session-Token', sessionToken)
-        .expect(200,done);
-
-        /*
-    
-        fudging it 
-
+        .get('/checkToken/bad')
+        .set('x-tidepool-session-token', sessionToken)
+        .expect(401)
         .end(function(err, res) {
             if (err) return done(err);
-            console.log(res.headers);
-            res.headers.should.not.have.property('x-tidepool-session-token');
+            expect(res.body.idGiven).to.not.exist;
             done();
-        });*/
+        });
         
     });
 
-    it('trying to get a new token', function(done) {
+    it('do not ask for token if we are alredy sorted', function(done) {
 
         supertest(usersAPIHelper)
         .get('/getToken')
-        .expect(200,done);
-        /*
-    
-        fudging it
-
+        .set('x-tidepool-session-token', sessionToken)
+        .expect(200)
         .end(function(err, res) {
             if (err) return done(err);
-            console.log(res.headers);
-            res.headers.should.have.property('x-tidepool-session-token');
+            expect(res.body.askForToken).to.be.false;
             done();
         });
-        */
+        
+    });
+
+    it('ask for token if we need one', function(done) {
+
+        supertest(usersAPIHelper)
+        .get('/getToken')
+        .expect(200)
+        .end(function(err, res) {
+            if (err) return done(err);
+            expect(res.body.askForToken).to.be.true;
+            done();
+        });
         
     });
 });
