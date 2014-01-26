@@ -70,7 +70,7 @@ describe('User API Helper', function() {
         server.get('/checkToken/:usertoken',userApi.checkToken,function(req,res,next){
 
             //pass through result
-            if(res.tidepool.userid == null){
+            if(req.tidepool.userid == null){
                 res.send(res.statusCode);
             }else{
                 res.send(200,{idGiven:true});  
