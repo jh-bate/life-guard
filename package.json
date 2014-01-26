@@ -1,0 +1,28 @@
+{
+  "name": "life-guard",
+  "version": "0.0.1",
+  "description": "Client lib that helps with  Tidepool user authentication",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "author": "Tidepool",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "expect": "0.0.2",
+    "supertest": "0.9.0",
+    "restify": "2.6.1",
+    "mocha": "1.17.1",
+    "request": "~2.33.0",
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.8.0",
+    "grunt-contrib-uglify": "~0.3.2",
+    "grunt-docco2": "~0.1.5",
+    "grunt-shell-spawn": "~0.3.0",
+    "grunt-mocha-test": "~0.8.2",
+    "chai": "~1.8.1"
+  },
+  "dependencies": {
+    "request": "2.33.0"
+  }
+}
