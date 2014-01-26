@@ -114,7 +114,7 @@ describe('User API Helper', function() {
     it('invalid token means 401 and no userid', function(done) {
 
         supertest(usersAPIHelper)
-        .get('/checkToken/bad')
+        .get('/checkToken/123-bad-1')
         .set('x-tidepool-session-token', sessionToken)
         .expect(401)
         .end(function(err, res) {
