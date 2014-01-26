@@ -125,7 +125,7 @@ describe('User API Helper', function() {
         
     });
 
-    it('do not ask for token if we are alredy sorted', function(done) {
+    it('do not ask for token if we are already sorted with one', function(done) {
 
         supertest(usersAPIHelper)
         .get('/getToken')

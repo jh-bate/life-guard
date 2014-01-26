@@ -23,7 +23,6 @@
     "chai": "~1.8.1"
   },
   "dependencies": {
-    "request": "2.33.0",
-    "superagent": "~0.16.0"
+    "superagent": "0.16.0"
   }
 }
