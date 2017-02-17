@@ -9,7 +9,7 @@ Requirements:
 
 - [Node.js](http://nodejs.org/)
 - [Grunt](http://gruntjs.com/getting-started)
-- [Mocha](http://visionmedia.github.io/mocha/)
+- [Mocha](http://mochajs.org/)
 
 Clone this repo then install dependencies:
 
